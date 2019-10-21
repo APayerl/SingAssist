@@ -1,0 +1,8 @@
+{
+    "https": {
+        "port": 443,
+        "sslLocation": ".ssl",
+        "privKeyName": "key.priv",
+        "pubKeyName": "key.pub"
+    }
+}
