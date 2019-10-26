@@ -13,6 +13,8 @@
   "author": "Anders Payerl",
   "license": "MIT",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.2",
+    "@types/cookies": "^0.7.4",
     "@types/express": "^4.17.1",
     "@types/express-formidable": "^1.0.4",
     "@types/jasmine": "^3.4.4",
@@ -26,6 +28,10 @@
   },
   "dependencies": {
     "@hapi/joi": "^16.1.7",
+    "cookie-encrypter": "^1.0.1",
+    "cookie-parser": "^1.4.4",
+    "cookies": "^0.8.0",
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "express-formidable": "^1.2.0",
