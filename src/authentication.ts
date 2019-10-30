@@ -1,16 +1,17 @@
 import { Request, Response, NextFunction, CookieOptions } from 'express';
 import jwt from 'jsonwebtoken';
 import { options } from 'joi';
+import { PreferenceParser } from './preference-parser';
 
 export class Authentication {
-    public static async putCookie(req: Request, res: Response): Promise<void> {
+    public static async putCookie(req: Request, res: Response, prefParser: PreferenceParser): Promise<void> {
         let cookieOptions: CookieOptions = {
-            domain: 'localhost',
-            httpOnly: true,
-            secure: true,
-            signed: true,
-            sameSite: 'lax',
-            maxAge: 100000
+            domain: prefParser.domain,
+            httpOnly: prefParser.cookie.httpOnly,
+            secure: prefParser.https.available,
+            signed: prefParser.cookie.signed,
+            sameSite: prefParser.cookie.sameSite,
+            maxAge: prefParser.cookie.maxAge
         }
         
         res.cookie('myCookie', 'my super duper secret', cookieOptions);

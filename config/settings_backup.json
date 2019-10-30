@@ -1,4 +1,9 @@
 {
+    "https": {
+        "sslLocation": ".ssl",
+        "privKeyName": "server.key",
+        "certName": "server.cert"
+    },
     "domain": "localhost",
     "port": 8085,
     "cookie": {
