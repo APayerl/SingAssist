@@ -4,8 +4,6 @@ import asyncHandler from 'express-async-handler';
 import * as https from 'https';
 import * as http from 'http';
 import * as fs from 'fs';
-import cookieParser from 'cookie-parser';
-import cookieEncrypter from 'cookie-encrypter';
 
 import { Authentication, checkToken } from './authentication';
 import { PreferenceParser } from './preference-parser';
@@ -15,8 +13,6 @@ let prefParser = new PreferenceParser(require('../config/settings.json'));
 // Router 
 let router = express.Router();
 
-router.route('/putCookie').get(asyncHandler((req: Request, res: Response) => Authentication.putCookie(req, res, prefParser)));
-router.route('/getCookie').get((req: Request, res: Response) => Authentication.getCookie(req, res));
 //router.route('/test').get(checkToken, asyncHandler((req: Request, res: Response) => console.log('Tested!')));
 
 // App
@@ -25,9 +21,6 @@ var app = express();
 let keys = ['we sausage test piano girl gnome'];
 const key = keys[0];
 console.log('Key: ' + key);
-// app.use(Cookies.express(keys));
-app.use(cookieParser(key));
-app.use(cookieEncrypter(key));
 app.get('/test', checkToken, (req, res) => console.log('test'));
 
 let port: number;

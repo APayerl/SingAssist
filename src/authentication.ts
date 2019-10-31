@@ -4,23 +4,6 @@ import { options } from 'joi';
 import { PreferenceParser } from './preference-parser';
 
 export class Authentication {
-    public static async putCookie(req: Request, res: Response, prefParser: PreferenceParser): Promise<void> {
-        let cookieOptions: CookieOptions = {
-            domain: prefParser.domain,
-            httpOnly: prefParser.cookie.httpOnly,
-            secure: prefParser.https.available,
-            signed: prefParser.cookie.signed,
-            sameSite: prefParser.cookie.sameSite,
-            maxAge: prefParser.cookie.maxAge
-        }
-        
-        res.cookie('myCookie', 'my super duper secret', cookieOptions);
-        res.sendStatus(200);
-    }
-
-    public static async getCookie(req: Request, res: Response) {
-        res.status(200).send(req.signedCookies);
-    }
 }
 
 export function checkToken(req, res, next) {

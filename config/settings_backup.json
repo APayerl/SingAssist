@@ -5,11 +5,5 @@
         "certName": "server.cert"
     },
     "domain": "localhost",
-    "port": 8085,
-    "cookie": {
-        "sameSite": "lax",
-        "httpOnly": true,
-        "signed": true,
-        "maxAge": 100000
-    }
+    "port": 8085
 }
