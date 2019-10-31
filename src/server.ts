@@ -7,8 +7,9 @@ import * as fs from 'fs';
 import cookieParser from 'cookie-parser';
 import cookieEncrypter from 'cookie-encrypter';
 
-import { Authentication, checkToken } from './authentication';
+import { Authentication, checkToken, authRoutes } from './authentication';
 import { PreferenceParser } from './preference-parser';
+import { hash256 } from "./security";
 
 let prefParser = new PreferenceParser(require('../config/settings.json'));
 
@@ -17,15 +18,18 @@ let router = express.Router();
 
 router.route('/putCookie').get(asyncHandler((req: Request, res: Response) => Authentication.putCookie(req, res, prefParser)));
 router.route('/getCookie').get((req: Request, res: Response) => Authentication.getCookie(req, res));
+router.route('/deleteCookie').get((req: Request, res: Response) => Authentication.removeCookie(req, res));
+
+router.use('/auth', authRoutes);
 //router.route('/test').get(checkToken, asyncHandler((req: Request, res: Response) => console.log('Tested!')));
 
 // App
 var app = express();
 
-let keys = ['we sausage test piano girl gnome'];
-const key = keys[0];
-console.log('Key: ' + key);
-// app.use(Cookies.express(keys));
+let key = 'we sausage test piano girl gnome test';
+
+key = hash256(key).slice(16, 48);
+
 app.use(cookieParser(key));
 app.use(cookieEncrypter(key));
 app.get('/test', checkToken, (req, res) => console.log('test'));

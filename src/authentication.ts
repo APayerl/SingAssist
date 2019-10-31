@@ -1,9 +1,20 @@
-import { Request, Response, NextFunction, CookieOptions } from 'express';
+import express, { Request, Response, NextFunction, CookieOptions, Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { options } from 'joi';
 import { PreferenceParser } from './preference-parser';
+import { hash_SHA3_512 } from './security';
+
+export let authRoutes: Router = express.Router();
+
+authRoutes.route('/login').post((req: Request, res: Response) => {
+    res.status(200).send(hash_SHA3_512(req.fields.username + "" + req.fields.password));
+});
+
 
 export class Authentication {
+    static removeCookie(req: Request, res: Response): any {
+        res.clearCookie('myCookie').status(200).send("Cookie removed");
+    }
     public static async putCookie(req: Request, res: Response, prefParser: PreferenceParser): Promise<void> {
         let cookieOptions: CookieOptions = {
             domain: prefParser.domain,
@@ -22,6 +33,8 @@ export class Authentication {
         res.status(200).send(req.signedCookies);
     }
 }
+
+// TODO Save session JWT to cookie after login
 
 export function checkToken(req, res, next) {
     let secret = process.env.JWTSECRET || 'we sausage test piano harp gnome game optimal strange herpies';
