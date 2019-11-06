@@ -1,27 +1,17 @@
 import express, { Request, Response } from "express";
 import expressForm from "express-formidable";
-import asyncHandler from 'express-async-handler';
 import * as https from 'https';
 import * as http from 'http';
 import * as fs from 'fs';
 
-import { Authentication, checkToken } from './authentication';
 import { PreferenceParser } from './preference-parser';
+import { RouteHandler } from "./RouteHandler";
+import { AuthHandler } from "./AuthHandler";
 
 let prefParser = new PreferenceParser(require('../config/settings.json'));
 
-// Router 
-let router = express.Router();
-
-//router.route('/test').get(checkToken, asyncHandler((req: Request, res: Response) => console.log('Tested!')));
-
 // App
 var app = express();
-
-let keys = ['we sausage test piano girl gnome'];
-const key = keys[0];
-console.log('Key: ' + key);
-app.get('/test', checkToken, (req, res) => console.log('test'));
 
 let port: number;
 
@@ -35,8 +25,10 @@ try {
 
 port = prefParser.port;
 
+let routeHandler = new RouteHandler(new AuthHandler());
+
 app.use(expressForm());
-app.use('/', router);
+app.use('/', routeHandler.routes);
 
 let server: https.Server | http.Server;
 
