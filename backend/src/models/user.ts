@@ -1,4 +1,7 @@
-module.exports = (sequelize, type) => {
+import sequelize, { Model, Sequelize } from 'sequelize';
+// import sequelize from 'sequelize';
+
+module.exports = (sequelize: Sequelize, type: sequelize.DataTypes) => {
     return sequelize.define('user', {
         id: {
           type: type.INTEGER,
@@ -9,25 +12,12 @@ module.exports = (sequelize, type) => {
     })
 }
 
-import { Sequelize, Model, DataTypes, BuildOptions } from 'sequelize';
-import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
-
 class User extends Model {
-    public id!: number; // Note that the `null assertion` `!` is required in strict mode.
+    public id!: number;
     public firstname!: string;
     public lastname!: string;
   
     // timestamps!
     public readonly createdAt!: Date;
     public readonly updatedAt!: Date;
-  
-    public getProjects!: HasManyGetAssociationsMixin<Project>;
-    public addProject!: HasManyAddAssociationMixin<Project, number>;
-    public hasProject!: HasManyHasAssociationMixin<Project, number>;
-    public countProjects!: HasManyCountAssociationsMixin;
-    public createProject!: HasManyCreateAssociationMixin<Project>;
-  
-    public static associations: {
-      projects: Association<User, Project>;
-    };
-  }
+}
