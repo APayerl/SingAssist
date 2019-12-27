@@ -1,8 +1,7 @@
-import { Sequelize, Model, DataTypes } from 'sequelize';
-import { HasManyGetAssociationsMixin, HasManyAddAssociationMixin, HasManyHasAssociationMixin, Association, HasManyCountAssociationsMixin, HasManyCreateAssociationMixin } from 'sequelize';
-import { User } from './models/User';
-import { Credential } from './models/Credential';
-import { createConnection, Connection } from 'mariadb'; 
+import { Sequelize } from 'sequelize';
+import { User, UserInit } from './models/User';
+import { Credential, CredentialInit } from './models/Credential';
+import { createConnection, Connection } from 'mariadb';
 
 export class DbHelper {
 	static sequelize: Sequelize;
@@ -12,14 +11,16 @@ export class DbHelper {
 	mHost: string;
 	mPort: number;
 	private ready: boolean;
+	syncInterval: number;
 
-  	constructor(dbName: string, username: string, password: string, mHost: string, mPort: number) {
+  	constructor(dbName: string, username: string, password: string, mHost: string, mPort: number, syncInt: number = 5*60*1000) {
 		if(!DbHelper.sequelize) {
 			this.dbName = dbName;
 			this.username = username;
 			this.password = password;
 			this.mHost = mHost;
 			this.mPort = mPort;
+			this.syncInterval = syncInt;
 			this.init().then(val => {
 				this.ready = val;
 			}).catch(err => {
@@ -45,12 +46,15 @@ export class DbHelper {
 					pool: {
 						max: 10,
 						min: 0,
-						acquire: 30000,
+						acquire: 1000,
 						idle: 10000
 					}
 				});
-			
-				const syncInterval: number = 5 * 60 * 1000;
+
+				UserInit(DbHelper.sequelize);
+				CredentialInit(DbHelper.sequelize);
+
+				User.hasMany(Credential, { foreignKey: 'id', sourceKey: 'id' });
 			
 				DbHelper.sequelize.sync();
 				let syncTask = setInterval(() => {
@@ -59,38 +63,7 @@ export class DbHelper {
 					}).catch(err => {
 						console.log(err);
 					});
-				}, syncInterval);
-			
-				Credential.init({
-					email: {
-						type: DataTypes.STRING,
-						allowNull: false
-					},
-					password: {
-						type: DataTypes.STRING,
-						allowNull: false
-					}
-				}, {
-					sequelize: DbHelper.sequelize,
-					tableName: 'credentials'
-				});
-			
-				User.init({
-					firstname: {
-						type: DataTypes.STRING,
-						allowNull: false
-					},
-					lastname: {
-						type: new DataTypes.STRING(128),
-						allowNull: false
-					}
-				}, {
-					tableName: 'users',
-					sequelize: DbHelper.sequelize
-				});
-	
-				User.hasMany(Credential);
-				Credential.belongsTo(User);
+				}, this.syncInterval);
 			}
 			resolve(true);
 		});
