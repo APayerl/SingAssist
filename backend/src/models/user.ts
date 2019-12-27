@@ -16,15 +16,13 @@ export function UserInit(sequelize: Sequelize) {
             allowNull: false
         },
         lastname: {
-            type: new DataTypes.STRING(128),
+            type: DataTypes.STRING,
             allowNull: false
         }
     }, {
         tableName: 'users',
         sequelize: sequelize
     });
-
-    // User.hasMany(Credential);
 }
 
 export class User extends BaseModel {

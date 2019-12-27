@@ -5,11 +5,11 @@ export function CredentialInit(sequelize: Sequelize) {
 	Credential.init({
 		email: {
 			type: DataTypes.STRING,
-			allowNull: false
+			allowNull: true
 		},
 		password: {
 			type: DataTypes.STRING,
-			allowNull: false
+			allowNull: true
 		}
 	}, {
 		sequelize: sequelize,
