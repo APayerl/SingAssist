@@ -1,23 +1,20 @@
-import sequelize, { Model, Sequelize } from 'sequelize';
-// import sequelize from 'sequelize';
+import { HasManyGetAssociationsMixin, HasManyHasAssociationMixin, HasManyCountAssociationsMixin, HasManyAddAssociationMixin, HasManyCreateAssociationMixin, Association } from 'sequelize';
+import { BaseModel } from './BaseModel';
+import { Credential } from './Credential';
 
-module.exports = (sequelize: Sequelize, type: sequelize.DataTypes) => {
-    return sequelize.define('user', {
-        id: {
-          type: type.INTEGER,
-          primaryKey: true,
-          autoIncrement: true
-        },
-        name: type.STRING
-    })
-}
-
-class User extends Model {
-    public id!: number;
+export class User extends BaseModel {
     public firstname!: string;
     public lastname!: string;
-  
-    // timestamps!
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+
+    public getCredentials!: HasManyGetAssociationsMixin<Credential>;
+    public createCredential!: HasManyCreateAssociationMixin<Credential>;
+    public addCredential!: HasManyAddAssociationMixin<Credential, number>;
+    public hasCredential!: HasManyHasAssociationMixin<Credential, number>;
+    public countCredentials!: HasManyCountAssociationsMixin;
+
+    public readonly credentials?: Credential[];
+
+    public static associations: {
+        credentials: Association<User, Credential>;
+    }
 }

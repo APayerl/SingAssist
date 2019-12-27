@@ -7,8 +7,12 @@ import * as fs from 'fs';
 import { PreferenceParser } from './preference-parser';
 import { RouteHandler } from "./RouteHandler";
 import { AuthHandler } from "./AuthHandler";
+import { DbHelper } from "./DbHandler";
+import { users } from "./User";
 
 let prefParser = new PreferenceParser(require('../config/settings.json'));
+
+let db = new DbHelper("databasename", "root", "root", "localhost", 3306);
 
 // App
 var app = express();
@@ -28,7 +32,8 @@ port = prefParser.port;
 let routeHandler = new RouteHandler(new AuthHandler());
 
 app.use(expressForm());
-app.use('/', routeHandler.routes);
+app.use('/users', users);
+// app.use('/', routeHandler.routes);
 
 let server: https.Server | http.Server;
 
