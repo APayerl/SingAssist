@@ -1,6 +1,6 @@
 import express, { Request, Response, Router, IRoute } from "express";
 import { User } from "./models/User";
-import { Credential } from "./models/Credential";
+import { Credential, CredentialType, CreateCredentialObject } from "./models/Credential";
 
 export let users: Router = express.Router();
 
@@ -28,21 +28,11 @@ userId.patch((req: Request, res: Response) => {
 });
 
 users.route('/').post(async (req: Request, res: Response) => {
-	//TODO Create new user
 	let user = await User.create({
 		firstname: req.fields.firstname,
 		lastname: req.fields.lastname
 	} as User);
-	await user.createCredential({
-		email: req.fields.email,
-		password: req.fields.password
-	});
-	// await user.addCredential({ 
-	// 	email: req.fields.email,
-	// 	password: req.fields.password
-	// } as Credential);
-	// let cred: Credential = { email: req.fields.email, password: (req.fields.password as string) };
-	// user.credentials.push(cred);
+	await user.createCredential(CreateCredentialObject(CredentialType.EMAIL, req.fields.email as string, req.fields.password as string, null));
 	res.status(201).send(`User: ${JSON.stringify(user)} was created!`);
 });
 
