@@ -1,6 +1,9 @@
 import express, { Request, Response, Router, IRoute } from "express";
 import { User } from "./models/User";
-import { Credential, CredentialType, CreateCredentialObject } from "./models/Credential";
+import { CredentialType, CreateCredentialObject } from "./models/Credential";
+import { PreferenceParser } from "./preference-parser";
+
+let prefParser = new PreferenceParser(require('../config/settings.json'));
 
 export let users: Router = express.Router();
 

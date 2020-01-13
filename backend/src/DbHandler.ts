@@ -2,25 +2,15 @@ import { Sequelize } from 'sequelize';
 import { User, UserInit } from './models/User';
 import { Credential, CredentialInit } from './models/Credential';
 import { createConnection, Connection } from 'mariadb';
+import { PreferenceParser } from './preference-parser';
+
 
 export class DbHelper {
 	static sequelize: Sequelize;
-	dbName: string;
-	username: string;
-	password: string;
-	mHost: string;
-	mPort: number;
 	private ready: boolean;
-	syncInterval: number;
 
-  	constructor(dbName: string, username: string, password: string, mHost: string, mPort: number, syncInt: number = 5*60*1000) {
+  	constructor(private prefParser: PreferenceParser) {
 		if(!DbHelper.sequelize) {
-			this.dbName = dbName;
-			this.username = username;
-			this.password = password;
-			this.mHost = mHost;
-			this.mPort = mPort;
-			this.syncInterval = syncInt;
 			this.init().then(val => {
 				this.ready = val;
 			}).catch(err => {
@@ -33,16 +23,16 @@ export class DbHelper {
 	private async init(): Promise<true> {
 		return new Promise<true>(async (resolve, reject) => {
 			if(!DbHelper.sequelize) {
-				let conn = await createConnection({ host: this.mHost, port: this.mPort, user: this.username, password: this.password }).catch(err => {
+				let conn = await createConnection({ host: this.prefParser.database.domain, port: this.prefParser.database.port, user: this.prefParser.database.username, password: this.prefParser.database.password }).catch(err => {
 					//TODO Fix error handling if not able to connect
 				}) as Connection;
-				await conn.query(`CREATE DATABASE IF NOT EXISTS ${this.dbName}`);
+				await conn.query(`CREATE DATABASE IF NOT EXISTS ${this.prefParser.database.name}`);
 				await conn.end();
 
-				DbHelper.sequelize = new Sequelize(this.dbName, this.username, this.password, {
-					host: this.mHost,
+				DbHelper.sequelize = new Sequelize(this.prefParser.database.name, this.prefParser.database.username, this.prefParser.database.password, {
+					host: this.prefParser.database.domain,
 					dialect: 'mariadb',
-					port: this.mPort,
+					port: this.prefParser.database.port,
 					pool: {
 						max: 10,
 						min: 0,
@@ -63,7 +53,7 @@ export class DbHelper {
 					}).catch(err => {
 						console.log(err);
 					});
-				}, this.syncInterval);
+				}, this.prefParser.database.sync_inteval);
 			}
 			resolve(true);
 		});
