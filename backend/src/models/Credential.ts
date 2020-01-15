@@ -21,8 +21,7 @@ export function CredentialInit(sequelize: Sequelize) {
 			allowNull: true
 		},
 		type: {
-			type: DataTypes.ENUM,
-			values: credArr,
+			type: DataTypes.INTEGER,
 			allowNull: false
 		}
 	}, {

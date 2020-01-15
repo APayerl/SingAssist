@@ -43,6 +43,10 @@ users.route('/').post(async (req: Request, res: Response) => {
 users.route('/').get(async (req: Request, res: Response) => {
 	//TODO Get user
 	let user = await User.findOne({ where: { firstname: 'Anders'}});
-	let cred = await user.getCredentials();
-	res.status(200).send(JSON.stringify(user) + " + " + JSON.stringify(cred));
+	if(user) {
+		let cred = await user.getCredentials() as Credential[];
+		res.status(200).send(JSON.stringify(user) + " + " + JSON.stringify(cred[0]));
+	} else {
+		res.status(200).send("No user found.");
+	}
 });
