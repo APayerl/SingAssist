@@ -1,14 +1,4 @@
 {
     "domain": "localhost",
-    "port": 8085,
-    "organisation": {
-        "name": "coir_name"
-    },
-    "db": {
-        "sync_interval": 60000,
-        "username": "root",
-        "password": "root",
-        "domain": "localhost",
-        "port": 3306
-    }
+    "port": 8085
 }

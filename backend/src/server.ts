@@ -12,7 +12,7 @@ import { users } from "./User";
 
 let prefParser = new PreferenceParser(require('../config/settings.json'));
 
-let db = new DbHelper(prefParser);
+let db = new DbHelper("databasename", "root", "root", "localhost", 3306);
 
 // App
 var app = express();
