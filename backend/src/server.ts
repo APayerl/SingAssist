@@ -7,17 +7,15 @@ import * as fs from 'fs';
 import { PreferenceParser } from './preference-parser';
 import { RouteHandler } from "./RouteHandler";
 import { AuthHandler } from "./AuthHandler";
-import { DbHelper } from "./DbHandler";
+import { DbHandler } from "./DbHandler";
 import { users } from "./User";
 
 let prefParser = new PreferenceParser(require('../config/settings.json'));
 
-let db = new DbHelper(prefParser);
+let db = new DbHandler(prefParser);
 
 // App
 var app = express();
-
-let port: number;
 
 let httpsAvail: boolean;
 try {
@@ -26,8 +24,6 @@ try {
     httpsAvail = false;
     console.log(err);
 }
-
-port = prefParser.port;
 
 let routeHandler = new RouteHandler(new AuthHandler());
 
@@ -46,6 +42,6 @@ if(httpsAvail) {
     server = http.createServer(app);
 }
 
-server.listen(port, prefParser.domain, () => {
-    console.log(`Listening on ${prefParser.domain}:${port}!`);
+server.listen(prefParser.port, prefParser.domain, () => {
+    console.log(`Listening on ${prefParser.domain}:${prefParser.port}!`);
 });
