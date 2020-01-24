@@ -2,11 +2,7 @@ import { BaseModel } from "./BaseModel";
 import { DataTypes, Sequelize } from "sequelize";
 
 export function CredentialInit(sequelize: Sequelize) {
-	let cred = Object.keys(CredentialType);
-	let credArr: string[] = [];
-	for(let i = 0; i < cred.length/2; i++) {
-		credArr.push(`${i}`);
-	};
+	let credArr = Object.keys(CredentialType);
 	Credential.init({
 		email: {
 			type: DataTypes.STRING,
@@ -22,7 +18,7 @@ export function CredentialInit(sequelize: Sequelize) {
 		},
 		type: {
 			type: DataTypes.ENUM,
-			values: credArr,
+			values: credArr.slice(credArr.length/2),
 			allowNull: false
 		}
 	}, {
@@ -34,15 +30,6 @@ export function CredentialInit(sequelize: Sequelize) {
 export enum CredentialType {
 	EMAIL,
 	TOKEN
-}
-
-export function CreateCredentialObject(_type: CredentialType, _email: string, _password: string, _token: string) {
-	return {
-		type: _type,
-		token: _token ? _token : null,
-		email: _email ? _email : null,
-		password: _password ? _password : null
-	};
 }
 
 export class Credential extends BaseModel {
