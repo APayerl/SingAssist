@@ -35,12 +35,12 @@ export enum CredentialType {
 	TOKEN
 }
 
-export function CreateCredentialObject(_type: CredentialType, _email: string | string[], _password: string | string[], _token: string | string[]) {
+export function CreateCredentialObject(_type: CredentialType, _email: string, _password: string, _token: string) {
 	return {
 		type: _type,
-		token: _token != null ? _token as string : null,
-		email: _email != null ? _email as string : null,
-		password: _password != null ? _password as string : null
+		token: _token ? _token : null,
+		email: _email ? _email : null,
+		password: _password ? _password : null
 	};
 }
 
