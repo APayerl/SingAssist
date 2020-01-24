@@ -4,11 +4,13 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
+    "setup": "npm install",
     "build": "tsc",
     "prod": "node dist/server.js",
     "dev": "ts-node src/server.ts",
     "dev:watch": "nodemon",
-    "test": "ts-node node_modules/jasmine/bin/jasmine"
+    "test:watch": "ts-node node_modules/jasmine/bin/jasmine",
+    "test": "node_modules/jasmine/bin/jasmine"
   },
   "author": "Anders Payerl",
   "license": "MIT",
