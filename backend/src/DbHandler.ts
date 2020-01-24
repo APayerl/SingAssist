@@ -2,44 +2,45 @@ import { Sequelize } from 'sequelize';
 import { User, UserInit } from './models/User';
 import { Credential, CredentialInit } from './models/Credential';
 import { createConnection, Connection } from 'mariadb';
+import { PreferenceParser } from './preference-parser';
 
-export class DbHelper {
+export class DbHandler {
 	static sequelize: Sequelize;
 	dbName: string;
 	username: string;
 	password: string;
 	mHost: string;
 	mPort: number;
-	private ready: boolean;
+	private static ready: boolean;
 	syncInterval: number;
 
-  	constructor(dbName: string, username: string, password: string, mHost: string, mPort: number, syncInt: number = 5*60*1000) {
-		if(!DbHelper.sequelize) {
-			this.dbName = dbName;
-			this.username = username;
-			this.password = password;
-			this.mHost = mHost;
-			this.mPort = mPort;
-			this.syncInterval = syncInt;
+  	constructor(pref: PreferenceParser, syncInt: number = 5*60*1000) {
+		if(!DbHandler.sequelize) {
+			this.dbName = pref.database.name;
+			this.username = pref.database.username;
+			this.password = pref.database.password;
+			this.mHost = pref.database.domain;
+			this.mPort = pref.database.port;
+			this.syncInterval = pref.database.sync_inteval;
 			this.init().then(val => {
-				this.ready = val;
+				DbHandler.ready = val;
 			}).catch(err => {
 				console.log(err);
-				this.ready = false;
+				DbHandler.ready = false;
 			});
 		}
 	}
 
 	private async init(): Promise<true> {
 		return new Promise<true>(async (resolve, reject) => {
-			if(!DbHelper.sequelize) {
+			if(!DbHandler.sequelize) {
 				let conn = await createConnection({ host: this.mHost, port: this.mPort, user: this.username, password: this.password }).catch(err => {
 					//TODO Fix error handling if not able to connect
 				}) as Connection;
 				await conn.query(`CREATE DATABASE IF NOT EXISTS ${this.dbName}`);
 				await conn.end();
 
-				DbHelper.sequelize = new Sequelize(this.dbName, this.username, this.password, {
+				DbHandler.sequelize = new Sequelize(this.dbName, this.username, this.password, {
 					host: this.mHost,
 					dialect: 'mariadb',
 					port: this.mPort,
@@ -48,22 +49,28 @@ export class DbHelper {
 						min: 0,
 						acquire: 1000,
 						idle: 10000
-					}
+					},
+					logging: false
 				});
 
-				UserInit(DbHelper.sequelize);
-				CredentialInit(DbHelper.sequelize);
+				UserInit(DbHandler.sequelize);
+				CredentialInit(DbHandler.sequelize);
 
-				User.hasMany(Credential, { foreignKey: 'id', sourceKey: 'id' });
+				User.hasMany(Credential, { onDelete: 'cascade', hooks: true, as: 'credentials' });
+				Credential.belongsTo(User);
+				// User.belongsToMany(Credential, {
+				// 	through: 'UserCredential',
+				// 	constraints: true,
+				// });
 			
-				DbHelper.sequelize.sync();
-				let syncTask = setInterval(() => {
-					DbHelper.sequelize.sync().then(seq => {
-						// console.log(seq.models);
-					}).catch(err => {
-						console.log(err);
-					});
-				}, this.syncInterval);
+				DbHandler.sequelize.sync();
+				// let syncTask = setInterval(() => {
+				// 	DbHandler.sequelize.sync().then(seq => {
+				// 		// console.log(seq.models);
+				// 	}).catch(err => {
+				// 		console.log(err);
+				// 	});
+				// }, this.syncInterval);
 			}
 			resolve(true);
 		});
