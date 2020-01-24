@@ -35,8 +35,7 @@ users.route('/').post(async (req: Request, res: Response) => {
 		firstname: req.fields.firstname,
 		lastname: req.fields.lastname
 	} as User);
-	let credentialObj = CreateCredentialObject(CredentialType.EMAIL, req.fields.email as string, req.fields.password as string, null);
-	await user.createCredential(credentialObj);
+	await user.createCredential(CreateCredentialObject(CredentialType.EMAIL, req.fields.email as string, req.fields.password as string, null));
 	res.status(201).send(`User: ${JSON.stringify(user)} was created!`);
 });
 

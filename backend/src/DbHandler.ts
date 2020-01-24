@@ -3,7 +3,6 @@ import { User, UserInit } from './models/User';
 import { Credential, CredentialInit } from './models/Credential';
 import { createConnection, Connection } from 'mariadb';
 import { PreferenceParser } from './preference-parser';
-import { UserCredential, UserCredentialInit } from './models/UserCredential';
 
 
 export class DbHelper {
@@ -44,11 +43,8 @@ export class DbHelper {
 
 				UserInit(DbHelper.sequelize);
 				CredentialInit(DbHelper.sequelize);
-				UserCredentialInit(DbHelper.sequelize);
 
-				// User.hasMany(Credential, { foreignKey: 'id', sourceKey: 'id' });
-				// User.hasMany(Credential, { sourceKey: 'id', foreignKey: 'UserId'});
-				Credential.belongsToMany(User, { through: UserCredential });
+				User.hasMany(Credential, { foreignKey: 'id', sourceKey: 'id' });
 			
 				DbHelper.sequelize.sync();
 				let syncTask = setInterval(() => {
