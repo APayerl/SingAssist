@@ -5,7 +5,8 @@ import { HasManyGetAssociationsMixin,
     HasManyCreateAssociationMixin, 
     Association, 
     DataTypes, 
-    Sequelize } from 'sequelize';
+    Sequelize,
+    HasManyRemoveAssociationMixin} from 'sequelize';
 import { BaseModel } from './BaseModel';
 import { Credential } from './Credential';
 
@@ -18,6 +19,10 @@ export function UserInit(sequelize: Sequelize) {
         lastname: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        email: {
+            type: DataTypes.STRING,
+            allowNull: false
         }
     }, {
         tableName: 'users',
@@ -28,12 +33,14 @@ export function UserInit(sequelize: Sequelize) {
 export class User extends BaseModel {
     public firstname!: string;
     public lastname!: string;
+    public email!: string;
 
     public getCredentials!: HasManyGetAssociationsMixin<Credential>;
     public createCredential!: HasManyCreateAssociationMixin<Credential>;
     public addCredential!: HasManyAddAssociationMixin<Credential, number>;
     public hasCredential!: HasManyHasAssociationMixin<Credential, number>;
     public countCredentials!: HasManyCountAssociationsMixin;
+    public removeCredential!: HasManyRemoveAssociationMixin<Credential, number>;
 
     public readonly credentials?: Credential[];
 
