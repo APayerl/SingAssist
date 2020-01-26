@@ -10,7 +10,7 @@
     "dev": "ts-node src/server.ts",
     "dev:watch": "nodemon",
     "test:watch": "ts-node node_modules/jasmine/bin/jasmine",
-    "test": "node_modules/jasmine/bin/jasmine"
+    "test": "node ./node_modules/jasmine/bin/jasmine.js --config=test/support/jasmine.json"
   },
   "author": "Anders Payerl",
   "license": "MIT",
