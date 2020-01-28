@@ -2,10 +2,10 @@
   "name": "singassist",
   "version": "0.0.1",
   "description": "",
-  "main": "dist/server.js",
+  "main": "dist/src/server.js",
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc",
-    "prod": "node dist/server.js",
+    "build": "node node_modules/typescript/bin/tsc -p .",
+    "prod": "node dist/src/server.js",
     "dev": "ts-node src/server.ts",
     "dev:watch": "nodemon",
     "test:watch": "ts-node node_modules/jasmine/bin/jasmine",

@@ -10,7 +10,7 @@ import { AuthHandler } from "./AuthHandler";
 import { DbHandler } from "./DbHandler";
 import { users } from "./User";
 
-let prefParser = new PreferenceParser(require('../config/settings.json'));
+let prefParser = new PreferenceParser(require((process.env.prod ? '../' : '') + '../config/settings.json'));
 
 let db = new DbHandler(prefParser);
 
