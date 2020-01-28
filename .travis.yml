@@ -5,6 +5,7 @@ node_js:
 
 install:
   - npm ci
+  - npm build
 
 # before_script:
 #   - npm run build
