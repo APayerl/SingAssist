@@ -5,12 +5,10 @@ node_js:
 
 install:
   - npm ci
-  - tsc
+  - npm run build
 
 # before_script:
 #   - npm run build
 
 script:
-  - ls -lha
-  - ls ../
   - npm run test
