@@ -1,7 +1,11 @@
 language: nodejs
+nodejs:
+  - "stable"
+
+cache: npm
 
 before_script:
-  # - npm run setup
+  - npm run setup
   - npm run build
 
 script:
