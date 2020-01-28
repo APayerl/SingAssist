@@ -1,12 +1,13 @@
-language: nodejs
-nodejs:
+language: node_js
+cache: npm
+node_js:
   - "stable"
 
-cache: npm
+install:
+  - npm ci
 
-before_script:
-  - npm run setup
-  - npm run build
+# before_script:
+#   - npm run build
 
 script:
   - npm run test
