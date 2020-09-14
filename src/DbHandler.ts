@@ -31,48 +31,51 @@ export class DbHandler {
 		}
 	}
 
-	private async init(): Promise<true> {
-		return new Promise<true>(async (resolve, reject) => {
-			if(!DbHandler.sequelize) {
-				let conn = await createConnection({ host: this.mHost, port: this.mPort, user: this.username, password: this.password }).catch(err => {
-					//TODO Fix error handling if not able to connect
-				}) as Connection;
-				await conn.query(`CREATE DATABASE IF NOT EXISTS ${this.dbName}`);
-				await conn.end();
+	private async init(): Promise<boolean> {
+		return new Promise<boolean>(async (resolve, reject) => {
+			try {
+				if(!DbHandler.sequelize) {
+					let conn = await createConnection({ host: this.mHost, port: this.mPort, user: this.username, password: this.password }) as Connection;
+					await conn.query(`CREATE DATABASE IF NOT EXISTS ${this.dbName}`);
+					await conn.end();
 
-				DbHandler.sequelize = new Sequelize(this.dbName, this.username, this.password, {
-					host: this.mHost,
-					dialect: 'mariadb',
-					port: this.mPort,
-					pool: {
-						max: 10,
-						min: 0,
-						acquire: 1000,
-						idle: 10000
-					},
-					logging: false
-				});
+					DbHandler.sequelize = new Sequelize(this.dbName, this.username, this.password, {
+						host: this.mHost,
+						dialect: 'mariadb',
+						port: this.mPort,
+						pool: {
+							max: 10,
+							min: 0,
+							acquire: 1000,
+							idle: 10000
+						},
+						logging: false
+					});
 
-				UserInit(DbHandler.sequelize);
-				CredentialInit(DbHandler.sequelize);
+					UserInit(DbHandler.sequelize);
+					CredentialInit(DbHandler.sequelize);
 
-				User.hasMany(Credential, { onDelete: 'cascade', hooks: true, as: 'credentials' });
-				Credential.belongsTo(User);
-				// User.belongsToMany(Credential, {
-				// 	through: 'UserCredential',
-				// 	constraints: true,
-				// });
-			
-				DbHandler.sequelize.sync();
-				// let syncTask = setInterval(() => {
-				// 	DbHandler.sequelize.sync().then(seq => {
-				// 		// console.log(seq.models);
-				// 	}).catch(err => {
-				// 		console.log(err);
-				// 	});
-				// }, this.syncInterval);
+					User.hasMany(Credential, { onDelete: 'cascade', hooks: true, as: 'credentials' });
+					Credential.belongsTo(User);
+					// User.belongsToMany(Credential, {
+					// 	through: 'UserCredential',
+					// 	constraints: true,
+					// });
+				
+					DbHandler.sequelize.sync();
+					// let syncTask = setInterval(() => {
+					// 	DbHandler.sequelize.sync().then(seq => {
+					// 		// console.log(seq.models);
+					// 	}).catch(err => {
+					// 		console.log(err);
+					// 	});
+					// }, this.syncInterval);
+				}
+				resolve(true);
+			} catch(error) {
+				//console.log(error);
+				reject(error);
 			}
-			resolve(true);
 		});
 	}
 }
