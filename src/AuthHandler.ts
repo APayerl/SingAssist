@@ -19,9 +19,9 @@ export class AuthHandler {
     }
 
     public getToken(username: string, password: string): string {
-        if(this.users.includes(crypto.createHash("sha256").update(username + password).digest("hex"))) {
+        if(this.users.includes(crypto.createHash("sha3-512").update(username + password).digest("hex"))) {
             let secret = "my super secret";
-            let myHash = crypto.createHash("sha256").update(username + password).digest("hex");
+            let myHash = crypto.createHash("sha3-512").update(username + password).digest("hex");
             let token = jwt.sign(myHash, secret, { algorithm: "HS512", encoding: "UTF-8", expiresIn: 60*5 });
 
         }
